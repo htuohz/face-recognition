@@ -9,6 +9,7 @@ import Clarifai from 'clarifai'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
+import General from './components/General/General';
 
 const particleOptions = {
   particles: {
@@ -34,9 +35,12 @@ class App extends Component {
       imageUrl:'',
       box:{},
       route:'signin',
-      isSignedIn:false
+      isSignedIn:false,
+      path:'GENERAL_MODEL',
+      response:{}
     }
   }
+
 
   calculateFaceLocation = (data) => {
     const clarifaiFace  = data.outputs[0].data.regions[0].region_info.bounding_box
@@ -73,14 +77,21 @@ class App extends Component {
     this.setState({imageUrl:this.state.input})
     console.log('click')
     app.models
-    .predict(Clarifai.FACE_DETECT_MODEL, 
+    .predict(Clarifai[this.state.path], 
     this.state.input)
-    .then( response=> this.displayFaceBox(this.calculateFaceLocation(response)))
+    // .then( response=> this.displayFaceBox(this.calculateFaceLocation(response)))
+    .then(response => this.setState({response}))
     .catch(err=>console.log(err))
+    console.log(this.state.response)
+  }
+
+  onPathChange = (event) =>{
+    this.setState({path:event.target.value,response:{}})
   }
 
   render(){
-    const {isSignedIn,imageUrl,route,box} = this.state
+    const { isSignedIn, imageUrl, route, box, path, response} = this.state
+    const image = document.getElementById('inputimage');
     return ( 
       <div className="App">
         <Particles params={particleOptions} className='particles'/>
@@ -89,8 +100,15 @@ class App extends Component {
         ?
         <div> <Logo />
         <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-        <FaceRecognition box={box} imageUrl={imageUrl} /></div>        
+        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} onPathChange={this.onPathChange} />
+        <div className='center'>
+          <div className='absolute mt2'>
+            <img id='inputimage' alt='' src={imageUrl} alt="" width='500px' height='auto' />
+            {path === 'FACE_DETECT_MODEL' && <FaceRecognition image={image} response={response} />}
+            {path === 'GENERAL_MODEL' && <General response={response}/>}
+          </div>
+        </div>
+        </div>        
         :(
         route==='signin'
         ?<Signin onRouteChange={this.onRouteChange}/>
