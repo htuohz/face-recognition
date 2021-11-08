@@ -24,7 +24,7 @@ const particleOptions = {
 }
 
 const app = new Clarifai.App({
-  apiKey:'0caefdb50fbd4d62b06a846854cce842'
+  apiKey:'0caefdb50fbd4d62b06a846854cce842',
 })
 
 class App extends Component {
@@ -37,10 +37,26 @@ class App extends Component {
       route:'signin',
       isSignedIn:false,
       path:'GENERAL_MODEL',
-      response:{}
+      response:{},
+      user:{
+        id:'',
+        name:'',
+        email:'',
+        entries:0,
+        joined:''
+      }
     }
   }
 
+  loadUser = (data) => {
+    this.setState({user:{
+        id:data.id,
+        name:data.name,
+        email:data.email,
+        entries:data.entries,
+        joined:data.joined
+    }})
+}
 
   calculateFaceLocation = (data) => {
     const clarifaiFace  = data.outputs[0].data.regions[0].region_info.bounding_box
@@ -103,7 +119,7 @@ class App extends Component {
         <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} onPathChange={this.onPathChange} />
         <div className='center'>
           <div className='absolute mt2'>
-            <img id='inputimage' alt='' src={imageUrl} alt="" width='500px' height='auto' />
+            <img id='inputimage' alt='' src={imageUrl} alt="" width='auto' height='500px' />
             {path === 'FACE_DETECT_MODEL' && <FaceRecognition image={image} response={response} />}
             {path === 'GENERAL_MODEL' && <General response={response}/>}
           </div>
@@ -112,7 +128,7 @@ class App extends Component {
         :(
         route==='signin'
         ?<Signin onRouteChange={this.onRouteChange}/>
-        :<Register onRouteChange={this.onRouteChange}/>)
+        :<Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>)
     }
       </div>
     );

@@ -2,7 +2,7 @@ import React from 'react'
 import './FaceRecognition.css'
 
 const FaceRecognition = ({ image,response }) => {
-    if(!response.outputs || !image){
+    if(!response.outputs || !image || !response.outputs[0].data.regions){
         return(
             <div></div>
         )
