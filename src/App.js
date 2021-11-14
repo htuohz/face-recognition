@@ -23,29 +23,29 @@ const particleOptions = {
   }
 }
 
-const app = new Clarifai.App({
-  apiKey:'0caefdb50fbd4d62b06a846854cce842',
-})
+
+
+const initialState = {
+  input:'',
+  imageUrl:'',
+  box:{},
+  route:'signin',
+  isSignedIn:false,
+  path:'GENERAL_MODEL',
+  response:{},
+  user:{
+    id:'',
+    name:'',
+    email:'',
+    entries:0,
+    joined:''
+  }
+}
 
 class App extends Component {
   constructor(){
     super();
-    this.state={
-      input:'',
-      imageUrl:'',
-      box:{},
-      route:'signin',
-      isSignedIn:false,
-      path:'GENERAL_MODEL',
-      response:{},
-      user:{
-        id:'',
-        name:'',
-        email:'',
-        entries:0,
-        joined:''
-      }
-    }
+    this.state = initialState
   }
 
   loadUser = (data) => {
@@ -82,7 +82,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if(route==='signout'){
-      this.setState({isSignedIn:false})
+      this.setState(initialState)
     }else if (route==='home'){
       this.setState({isSignedIn:true})
     }
@@ -92,11 +92,35 @@ class App extends Component {
   onButtonSubmit = () =>{
     this.setState({imageUrl:this.state.input})
     console.log('click')
-    app.models
-    .predict(Clarifai[this.state.path], 
-    this.state.input)
-    // .then( response=> this.displayFaceBox(this.calculateFaceLocation(response)))
-    .then(response => this.setState({response}))
+    fetch('http://localhost:3000/imageurl',{
+      method:'post',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        input:this.state.input,
+        path:this.state.path
+      })
+    })
+    .then(response=>response.json())
+    .then(response =>{
+      if(response){
+        this.setState({response})
+        fetch('http://localhost:3000/image',{
+          method:'put',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            id:this.state.user.id
+          })
+        })
+        .then(response=>response.json())
+        .then(count=>{
+          this.setState({user:{
+            ...this.state.user,
+            entries:count
+          }})
+        })
+        .catch(console.log)
+      }
+    })
     .catch(err=>console.log(err))
     console.log(this.state.response)
   }
@@ -115,7 +139,7 @@ class App extends Component {
         {route==='home'
         ?
         <div> <Logo />
-        <Rank />
+        <Rank name={this.state.user.name} entries={this.state.user.entries}/>
         <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} onPathChange={this.onPathChange} />
         <div className='center'>
           <div className='absolute mt2'>
@@ -127,7 +151,7 @@ class App extends Component {
         </div>        
         :(
         route==='signin'
-        ?<Signin onRouteChange={this.onRouteChange}/>
+        ?<Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
         :<Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>)
     }
       </div>
