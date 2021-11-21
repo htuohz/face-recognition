@@ -1,0 +1,16 @@
+.candidateList{
+    width: 100%;
+    max-width:360px;
+    max-height:300px;
+    position:absolute;
+    overflow: auto;
+    border-radius: 5;
+    text-transform: capitalize;
+    cursor: none;
+}
+
+.candidateList span {
+    width: 40%;
+}
+
+  

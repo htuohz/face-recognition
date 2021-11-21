@@ -10,6 +10,8 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import General from './components/General/General';
+import Celebrity from './components/Celebrity/Celebrity';
+import { ClarifaiModels } from './ClarifaiModels';
 
 const particleOptions = {
   particles: {
@@ -136,24 +138,25 @@ class App extends Component {
       <div className="App">
         <Particles params={particleOptions} className='particles'/>
         <Navigation onRouteChange={this.onRouteChange} isSignedIn={isSignedIn}/>
-        {route==='home'
-        ?
+        {/* {route==='home'
+        ? */}
         <div> <Logo />
-        <Rank name={this.state.user.name} entries={this.state.user.entries}/>
+        {/* <Rank name={this.state.user.name} entries={this.state.user.entries}/> */}
         <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} onPathChange={this.onPathChange} />
         <div className='center'>
           <div className='absolute mt2'>
             <img id='inputimage' alt='' src={imageUrl} alt="" width='auto' height='500px' />
-            {path === 'FACE_DETECT_MODEL' && <FaceRecognition image={image} response={response} />}
-            {path === 'GENERAL_MODEL' && <General response={response}/>}
+            {path === ClarifaiModels.FACE_DETECT_MODEL && <FaceRecognition image={image} response={response} />}
+            {path === ClarifaiModels.GENERAL_MODEL && <General response={response}/>}
+            {path === ClarifaiModels.CELEBRITY_MODEL && <Celebrity response={response} image={image}/>}
           </div>
         </div>
         </div>        
-        :(
+        {/* :(
         route==='signin'
         ?<Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
         :<Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>)
-    }
+    } */}
       </div>
     );
   }
