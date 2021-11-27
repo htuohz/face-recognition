@@ -19,7 +19,7 @@ const CandidateList = ({ concepts, topRow, rightCol, index, bottomRow }) => {
       }
     }
     if (containsNull === true) {
-      fetch(`http://127.0.0.1:3000/avatar`, {
+      fetch(`https://arcane-inlet-73155.herokuapp.com/avatar`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
