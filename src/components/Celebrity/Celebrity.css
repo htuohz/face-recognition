@@ -1,68 +1,64 @@
-.bounding-box{
-    position: absolute;
-    box-shadow: 0 0 0 3px #149df2 inset;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    cursor: pointer;
+.bounding-box {
+  position: absolute;
+  box-shadow: 0 0 0 3px #149df2 inset;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.bouding-box_concept{
-    background: #149df2;
-    color: #fff;
-    white-space: nowrap;
-    font-size: 0.75rem;
-    line-height: 0.75rem;
-    display: flex;
-    align-items: baseline;
-    font-weight: 700;
-    padding: 1px 3px;
-    border-radius: 2px 2px 0 0;
+.bouding-box_concept {
+  background: #149df2;
+  color: #fff;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  line-height: 0.75rem;
+  display: flex;
+  align-items: baseline;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 2px 2px 0 0;
 }
 
-.bounding-box-concept{
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateY(-100%);
-    
+.bounding-box-concept {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-100%);
 }
 
-.CandidateList{
-    opacity: 0;
-    overflow: hidden;
-    max-height: 0;
+.CandidateList {
+  opacity: 0;
+  overflow: hidden;
+  max-height: 0;
 }
 
-.Hidden{
-    animation: toggleOut 1s 1;
-    opacity: 0;
-    overflow: hidden;
-    max-height: 0;
-
+.Hidden {
+  animation: toggleOut 1s 1;
+  opacity: 0;
+  overflow: hidden;
+  max-height: 0;
 }
 
-.Show{
-    animation: toggleIn 1s 1;
-    opacity: 1;
-    height: 100%;
+.Show {
+  animation: toggleIn 1s 1;
+  opacity: 1;
+  height: 100%;
 }
 
-  
 @keyframes toggleIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 100%;
-    }
+  0% {
+    opacity: 0;
   }
-  @keyframes toggleOut {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
+  100% {
+    opacity: 100%;
   }
-  
+}
+@keyframes toggleOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

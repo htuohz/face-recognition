@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@azure/cognitiveservices-imagesearch": "^3.0.1",
+    "@azure/ms-rest-azure-js": "^2.1.0",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@mui/material": "^5.1.1",
