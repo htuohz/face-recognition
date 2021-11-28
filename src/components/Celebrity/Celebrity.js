@@ -7,10 +7,10 @@ import { Tooltip, Overlay } from 'react-bootstrap';
 const Celebrity = ({ image, response }) => {
   const [displayingList, setDisplayingList] = useState(-1);
   const [show, setShow] = useState(true);
-
   const target = useRef(null);
+
   if (!response.outputs || !image || !response.outputs[0].data.regions) {
-    return <div></div>;
+    return <></>;
   }
   const width = Number(image.width);
   const height = Number(image.height);
@@ -20,66 +20,65 @@ const Celebrity = ({ image, response }) => {
       setShow(false);
     }
   };
-  return response.outputs[0].data.regions.map((region, index) => {
-    const clarifaiFace = region.region_info.bounding_box;
-    const leftCol = clarifaiFace.left_col * width;
-    const topRow = clarifaiFace.top_row * height;
-    const rightCol = width - clarifaiFace.right_col * width;
-    const bottomRow = height - clarifaiFace.bottom_row * height;
-    if (!region.data.concepts[0]) {
-      return null;
-    }
-    const { name, value } = region.data.concepts[0];
-
-    return (
-      <div style={{ height: 'auto' }}>
-        <Overlay show={show} target={target.current} placement="right">
-          <Tooltip>Hover on faces to view more info about it.</Tooltip>
-        </Overlay>
-        <div
-          ref={target}
-          key={index}
-          className="bounding-box"
-          style={{
-            top: topRow,
-            right: rightCol,
-            left: leftCol,
-            bottom: bottomRow,
-          }}
-          onMouseEnter={() => {
-            setDisplayingList(index);
-            setShow(false);
-          }}
-          onMouseLeave={() => setDisplayingList(-1)}
-        >
-          {/* <div className='bounding-box-concept'>
-                                <div className='bouding-box_concept'>
-                                    <span className='concept_name'>{name}</span>
-                                    <span className='concept_prediction-val'>{value}</span>
-                                </div>
-                            </div> */}
-        </div>
-        {displayingList === index && (
-          <div
-            key={index}
-            className={
-              'CandidateList' + (displayingList === index ? ' Show' : ' Hidden')
-            }
-            onMouseEnter={() => handleOnMouseEnter(index)}
-            onMouseLeave={() => setDisplayingList(-1)}
-          >
-            <CandidateList
-              index={index}
-              concepts={region.data.concepts}
-              topRow={topRow}
-              rightCol={clarifaiFace.right_col * width}
-              bottomRow={bottomRow}
-            />
-          </div>
-        )}
+  return (
+    <>
+      <Overlay show={show} target={target.current} placement="bottom">
+        <Tooltip>Hover on faces to view more info about it.</Tooltip>
+      </Overlay>
+      <div ref={target}>
+        {response.outputs[0].data.regions.map((region, index) => {
+          const clarifaiFace = region.region_info.bounding_box;
+          const leftCol = clarifaiFace.left_col * width;
+          const topRow = clarifaiFace.top_row * height;
+          const rightCol = width - clarifaiFace.right_col * width;
+          const bottomRow = height - clarifaiFace.bottom_row * height;
+          if (!region.data.concepts[0]) {
+            return null;
+          }
+          return (
+            <>
+              <div style={{ height: 'auto' }}>
+                <div
+                  key={index}
+                  className="bounding-box"
+                  style={{
+                    top: topRow,
+                    right: rightCol,
+                    left: leftCol,
+                    bottom: bottomRow,
+                  }}
+                  onMouseEnter={() => {
+                    setDisplayingList(index);
+                    setShow(false);
+                  }}
+                  onMouseLeave={() => setDisplayingList(-1)}
+                ></div>
+                {displayingList === index && (
+                  <div
+                    key={index}
+                    className={
+                      'CandidateList' +
+                      (displayingList === index ? ' Show' : ' Hidden')
+                    }
+                    onMouseEnter={() => handleOnMouseEnter(index)}
+                    onMouseLeave={() => setDisplayingList(-1)}
+                  >
+                    <CandidateList
+                      index={index}
+                      concepts={region.data.concepts}
+                      topRow={topRow}
+                      rightCol={clarifaiFace.right_col * width}
+                      bottomRow={bottomRow}
+                    />
+                  </div>
+                )}
+              </div>
+            </>
+          );
+        })}
       </div>
-    );
-  });
+    </>
+  );
 };
 
 export default Celebrity;

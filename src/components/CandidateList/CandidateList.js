@@ -11,19 +11,16 @@ let imageCache = {};
 const CandidateList = ({ concepts, topRow, rightCol, index, bottomRow }) => {
   const [images, setImages] = useState(imageCache);
   useEffect(() => {
-    let containsNull = false;
-    for (const concept in concepts) {
-      if (!imageCache[concept.name]) {
-        containsNull = true;
-        break;
-      }
-    }
-    if (containsNull === true) {
+    //if any of image does not exists in the cache, it will call the backend to get the url
+    const conceptsHasNoImage = concepts.filter(
+      (concept) => !imageCache[concept.name]
+    );
+    if (conceptsHasNoImage.length > 0) {
       fetch(`https://arcane-inlet-73155.herokuapp.com/avatar`, {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          concepts,
+          concepts: conceptsHasNoImage,
         }),
       })
         .then((res) => res.json())
