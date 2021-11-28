@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import CandidateList from '../CandidateList/CandidateList';
 import './Celebrity.css';
 import { CSSTransition } from 'react-transition-group';
+import { Tooltip, Overlay } from 'react-bootstrap';
 
 const Celebrity = ({ image, response }) => {
   const [displayingList, setDisplayingList] = useState(-1);
+  const [show, setShow] = useState(true);
+
+  const target = useRef(null);
   if (!response.outputs || !image || !response.outputs[0].data.regions) {
     return <div></div>;
   }
@@ -13,6 +17,7 @@ const Celebrity = ({ image, response }) => {
   const handleOnMouseEnter = (index) => {
     if (displayingList === index) {
       setDisplayingList(index);
+      setShow(false);
     }
   };
   return response.outputs[0].data.regions.map((region, index) => {
@@ -28,7 +33,11 @@ const Celebrity = ({ image, response }) => {
 
     return (
       <div style={{ height: 'auto' }}>
+        <Overlay show={show} target={target.current} placement="right">
+          <Tooltip>Hover on faces to view more info about it.</Tooltip>
+        </Overlay>
         <div
+          ref={target}
           key={index}
           className="bounding-box"
           style={{
@@ -37,7 +46,10 @@ const Celebrity = ({ image, response }) => {
             left: leftCol,
             bottom: bottomRow,
           }}
-          onMouseEnter={() => setDisplayingList(index)}
+          onMouseEnter={() => {
+            setDisplayingList(index);
+            setShow(false);
+          }}
           onMouseLeave={() => setDisplayingList(-1)}
         >
           {/* <div className='bounding-box-concept'>
