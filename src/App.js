@@ -12,6 +12,7 @@ import Register from './components/Register/Register';
 import General from './components/General/General';
 import Celebrity from './components/Celebrity/Celebrity';
 import { ClarifaiModels } from './ClarifaiModels';
+import { Modal, Spinner } from 'react-bootstrap';
 
 const particleOptions = {
   particles: {
@@ -33,6 +34,11 @@ const initialState = {
   isSignedIn: false,
   path: 'GENERAL_MODEL',
   response: {},
+  isLoading: false,
+  isSubmitted: false,
+  showModal: false,
+  previousPath: '',
+  previousUrl: '',
   user: {
     id: '',
     name: '',
@@ -57,6 +63,18 @@ class App extends Component {
         entries: data.entries,
         joined: data.joined,
       },
+    });
+  };
+
+  setSubmitted = (status) => {
+    this.setState({
+      isSubmitted: status,
+    });
+  };
+
+  setShowModal = (status) => {
+    this.setState({
+      showModal: status,
     });
   };
 
@@ -93,8 +111,28 @@ class App extends Component {
   };
 
   onButtonSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
-    console.log('click');
+    if (!this.state.input) {
+      return;
+    }
+    if (this.state.path === ClarifaiModels.GENERAL_MODEL) {
+      this.setState({
+        showModal: true,
+      });
+    }
+    if (
+      this.state.path === this.state.previousPath &&
+      this.state.input == this.state.previousUrl &&
+      Object.keys(this.state.response)
+    ) {
+      return;
+    }
+    this.setState({
+      imageUrl: this.state.input,
+      isLoading: true,
+      isSubmitted: true,
+      response: {},
+    });
+
     fetch('https://arcane-inlet-73155.herokuapp.com/imageurl', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -106,7 +144,7 @@ class App extends Component {
       .then((response) => response.json())
       .then((response) => {
         if (response) {
-          this.setState({ response });
+          this.setState({ response, isLoading: false });
           fetch('https://arcane-inlet-73155.herokuapp.com/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
@@ -126,16 +164,31 @@ class App extends Component {
             .catch(console.log);
         }
       })
-      .catch((err) => console.log(err));
-    console.log(this.state.response);
+      .catch((err) => {
+        console.log(err);
+        this.setState({ isLoading: false });
+      });
+    this.setState({
+      previousPath: this.state.path,
+      previousUrl: this.state.input,
+    });
   };
 
   onPathChange = (event) => {
-    this.setState({ path: event.target.value, response: {} });
+    this.setState({ path: event.target.value });
   };
 
   render() {
-    const { isSignedIn, imageUrl, route, box, path, response } = this.state;
+    const {
+      isSignedIn,
+      imageUrl,
+      route,
+      box,
+      path,
+      response,
+      isLoading,
+      showModal,
+    } = this.state;
     const image = document.getElementById('inputimage');
     return (
       <div className="App">
@@ -166,13 +219,26 @@ class App extends Component {
                 height="500px"
               />
               {path === ClarifaiModels.FACE_DETECT_MODEL && (
-                <FaceRecognition image={image} response={response} />
+                <FaceRecognition
+                  image={image}
+                  response={response}
+                  isLoading={isLoading}
+                />
               )}
-              {path === ClarifaiModels.GENERAL_MODEL && (
-                <General response={response} />
+              {path === ClarifaiModels.GENERAL_MODEL && showModal && (
+                <General
+                  response={response}
+                  isLoading={isLoading}
+                  showModal={showModal}
+                  setShowModal={this.setShowModal}
+                />
               )}
               {path === ClarifaiModels.CELEBRITY_MODEL && (
-                <Celebrity response={response} image={image} />
+                <Celebrity
+                  response={response}
+                  image={image}
+                  isLoading={isLoading}
+                />
               )}
             </div>
           </div>

@@ -8,6 +8,19 @@ import { ProgressBar, Spinner } from 'react-bootstrap';
 
 let imageCache = {};
 
+// const { ImageSearchClient } = require('@azure/cognitiveservices-imagesearch');
+// const CognitiveServicesCredentials =
+//   require('@azure/ms-rest-azure-js').CognitiveServicesCredentials;
+
+// let serviceKey = 'cb3db18f3a7544cfbfc3e1f419d44787';
+// let credentials = new CognitiveServicesCredentials(serviceKey);
+// let imageSearchApiClient = new ImageSearchClient(credentials, {
+//   endpoint: 'https://celebritysearchnew.cognitiveservices.azure.com/',
+// });
+// const sendQuery = async (searchTerm) => {
+//   return await imageSearchApiClient.images.search(searchTerm);
+// };
+
 const CandidateList = ({ concepts, topRow, rightCol, index, bottomRow }) => {
   const [images, setImages] = useState(imageCache);
   useEffect(() => {
@@ -30,6 +43,16 @@ const CandidateList = ({ concepts, topRow, rightCol, index, bottomRow }) => {
         })
         .catch((err) => console.log(err));
     }
+    // sendQuery('zhang ziyi')
+    //   .then((imageResults) => {
+    //     if (imageResults == null) {
+    //       console.log('No image results were found.');
+    //     } else {
+    //       const firstImageResult = imageResults.value[0];
+    //       console.log(firstImageResult.thumbnailUrl);
+    //     }
+    //   })
+    //   .catch((err) => console.error(err));
     return () => {};
   }, [concepts]);
   return (

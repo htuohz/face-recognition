@@ -1,7 +1,22 @@
 import React from 'react';
+import { Spinner } from 'react-bootstrap';
 import './FaceRecognition.css';
 
-const FaceRecognition = ({ image, response }) => {
+const FaceRecognition = ({ image, response, isLoading }) => {
+  if (isLoading) {
+    return (
+      <Spinner
+        style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          width: '100px',
+          height: '100px',
+        }}
+        animation="border"
+      />
+    );
+  }
   if (!response.outputs || !image || !response.outputs[0].data.regions) {
     return <div></div>;
   }

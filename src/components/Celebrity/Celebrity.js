@@ -2,12 +2,26 @@ import React, { useState, useRef } from 'react';
 import CandidateList from '../CandidateList/CandidateList';
 import './Celebrity.css';
 import { CSSTransition } from 'react-transition-group';
-import { Tooltip, Overlay } from 'react-bootstrap';
+import { Tooltip, Overlay, Spinner } from 'react-bootstrap';
 
-const Celebrity = ({ image, response }) => {
+const Celebrity = ({ image, response, isLoading }) => {
   const [displayingList, setDisplayingList] = useState(-1);
   const [show, setShow] = useState(true);
   const target = useRef(null);
+  if (isLoading) {
+    return (
+      <Spinner
+        style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          width: '100px',
+          height: '100px',
+        }}
+        animation="border"
+      />
+    );
+  }
 
   if (!response.outputs || !image || !response.outputs[0].data.regions) {
     return <></>;
@@ -17,12 +31,12 @@ const Celebrity = ({ image, response }) => {
   const handleOnMouseEnter = (index) => {
     if (displayingList === index) {
       setDisplayingList(index);
-      setShow(false);
+      //setShow(false);
     }
   };
   return (
     <>
-      <Overlay show={show} target={target.current} placement="bottom">
+      <Overlay show={true} target={target.current} placement="bottom">
         <Tooltip>Hover on faces to view more info about it.</Tooltip>
       </Overlay>
       <div ref={target}>
@@ -49,7 +63,7 @@ const Celebrity = ({ image, response }) => {
                   }}
                   onMouseEnter={() => {
                     setDisplayingList(index);
-                    setShow(false);
+                    // setShow(false);
                   }}
                   onMouseLeave={() => setDisplayingList(-1)}
                 ></div>
