@@ -121,7 +121,7 @@ class App extends Component {
     }
     if (
       this.state.path === this.state.previousPath &&
-      this.state.input == this.state.previousUrl &&
+      this.state.input === this.state.previousUrl &&
       Object.keys(this.state.response)
     ) {
       return;
@@ -134,6 +134,7 @@ class App extends Component {
     });
 
     fetch('https://arcane-inlet-73155.herokuapp.com/imageurl', {
+      // fetch('http://127.0.0.1:3000/imageurl', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
